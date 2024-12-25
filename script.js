@@ -8,6 +8,9 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // Images
+const bgImg = new Image();
+bgImg.src = "./img/background.jpg";
+
 const santaImg = new Image();
 santaImg.src = "./img/santa.jpg";
 
@@ -20,16 +23,22 @@ snowTwirlImg.src = "./img/snow_twirl.jpg";
 const snowballImg = new Image();
 snowballImg.src = "./img/snowball.jpg"; // Nouvelle image pour la boule de neige
 
+const heartFullImg = new Image();
+heartFullImg.src = "./img/heart_full.jpg"; // Image pour un cœur rouge
+
+const heartEmptyImg = new Image();
+heartEmptyImg.src = "./img/heart_empty.jpg"; // Image pour un cœur vide
+
 
 
 // Variables du jeu
 let santa = { x: 50, y: canvas.height / 2, width: 60, height: 60, speed: 5, lives: 2 };
 let gift = { x: canvas.width, y: Math.random() * canvas.height, width: 50, height: 50 };
 let snowTwirl = { x: canvas.width, y: Math.random() * canvas.height, width: 50, height: 50 };
-let snowball = { x: canvas.width + 300, y: Math.random() * canvas.height, width: 50, height: 50 }; // Nouvelle boule de neige
+let snowball = { x: canvas.width + 300, y: Math.random() * canvas.height, width: 50, height: 50 };
 let score = 0;
-let startTime = null; // Pour chronométrer
-let elapsedTime = 0; // Temps écoulé
+let startTime = null;
+let elapsedTime = 0;
 let paused = false;
 
 // Gestion des touches
@@ -125,9 +134,36 @@ function updateGame() {
     }
 }
 
+
+// Dessiner les cœurs (représentation des vies)
+function drawHearts() {
+    const heartSize = 40; // Taille des cœurs
+    const startX = 20; // Position de départ sur l'axe X
+    const startY = 150; // Position sur l'axe Y
+
+    for (let i = 0; i < 2; i++) {
+        if (i < santa.lives) {
+            // Dessiner un cœur rouge pour chaque vie restante
+            ctx.drawImage(heartFullImg, startX + i * (heartSize + 10), startY, heartSize, heartSize);
+        } else {
+            // Dessiner un cœur vide pour chaque vie perdue
+            ctx.drawImage(heartEmptyImg, startX + i * (heartSize + 10), startY, heartSize, heartSize);
+        }
+    }
+}
+
 // Dessiner les éléments du jeu
 function drawGame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Défilement de l'arrière-plan
+    bgX -= 2;
+    if (bgX <= -canvas.width) {
+        bgX = 0;
+    }
+
+    ctx.drawImage(bgImg, bgX, 0, canvas.width, canvas.height);
+    ctx.drawImage(bgImg, bgX + canvas.width, 0, canvas.width, canvas.height);
 
     // Dessiner le Père Noël
     ctx.drawImage(santaImg, santa.x, santa.y, santa.width, santa.height);
@@ -141,13 +177,16 @@ function drawGame() {
     // Dessiner les boules de neige
     ctx.drawImage(snowballImg, snowball.x, snowball.y, snowball.width, snowball.height);
 
-    // Afficher le score et les vies
+    // Dessiner les cœurs
+    drawHearts();
+
+    // Afficher le score, les vies et le temps
     ctx.fillStyle = "white";
     ctx.font = "30px Arial";
     ctx.fillText(`Score: ${score}`, 20, 40);
-    ctx.fillText(`Vies: ${santa.lives}`, 20, 80);
     ctx.fillText(`Temps: ${elapsedTime}s`, 20, 120);
 }
+
 
 // Boucle de jeu
 function gameLoop() {
