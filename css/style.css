@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #87CEEB; /* Bleu ciel */
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+canvas {
+    display: block;
+    margin: auto;
+    border: 2px solid #fff;
+    background: #87CEEB; /* Bleu ciel */
+}
